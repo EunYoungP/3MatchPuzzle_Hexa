@@ -10,6 +10,7 @@ public class StageBuilder
     {
         curStage = stageIdx;
     }
+
     public static Stage BuildStage(int stageIdx)
     {
         StageBuilder stageBuilder = new StageBuilder(stageIdx);

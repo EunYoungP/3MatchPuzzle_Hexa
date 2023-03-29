@@ -27,8 +27,8 @@ public class Map : MonoBehaviour
         this.m_height = height;
 
         // Hex, Block 생성자 구현 예정
-        m_hexs = new Hex[width, height];
-        m_blocks = new Block[width, height];
+        m_hexs = new Hex[height, width];
+        m_blocks = new Block[height, width];
     }
 
     private void MakeHexaMap()
@@ -68,13 +68,13 @@ public class Map : MonoBehaviour
             // 1-1. 왼쪽 아래 
             for (int y = LeftBottomPivot.y - 1; y >= 0; y--)
             {
-                m_hexs[LeftBottomPivot.x, y].type = HexType.EMPTY;
+                m_hexs[y, LeftBottomPivot.x].type = HexType.EMPTY;
             }
 
             // 1-2. 왼쪽 위
             for (int y = LeftTopPivot.y + 1; y < m_height; y++)
             {
-                m_hexs[LeftTopPivot.x, y].type = HexType.EMPTY;
+                m_hexs[y, LeftTopPivot.x].type = HexType.EMPTY;
             }
         }
 
@@ -101,13 +101,13 @@ public class Map : MonoBehaviour
             // 1-1. 오른쪽 아래
             for (int y = RightBottomPivot.y - 1; y >= 0; y--)
             {
-                m_hexs[RightBottomPivot.x, y].type = HexType.EMPTY;
+                m_hexs[y,RightBottomPivot.x].type = HexType.EMPTY;
             }
 
             // 1-2. 오른쪽 위
             for (int y = RightTopPivot.y + 1; y < m_height; y++)
             {
-                m_hexs[RightTopPivot.x, y].type = HexType.EMPTY;
+                m_hexs[y, RightTopPivot.x].type = HexType.EMPTY;
             }
         }
     }
@@ -123,21 +123,21 @@ public class Map : MonoBehaviour
         MapShuffler mapShuffler = new MapShuffler(this, true);
         mapShuffler.Shuffle();
 
-        for (int x = 0; x < m_width; x++)
+        for (int y = 0; y < m_height; y++)
         {
-            for (int y = 0; y < m_height; y++)
+            for (int x = 0; x < m_width; x++)
             {
-                if (m_hexs[x, y].type == HexType.EMPTY)
+                if (m_hexs[y, x].type == HexType.EMPTY)
                 {
-                    m_blocks[x, y].type = BlockType.EMPTY;
+                    m_blocks[y, x].type = BlockType.EMPTY;
                     continue;
                 }
 
-                Hex hex = m_hexs[x, y].InstantiateHex(hexPrefab, container);
+                Hex hex = m_hexs[y, x].InstantiateHex(hexPrefab, container);
                 hex.Move(x  , y);
                 hex.SetObjectName(x, y);
 
-                Block block = m_blocks[x, y].InstantiateBlock(blockPrefab, container);
+                Block block = m_blocks[y, x].InstantiateBlock(blockPrefab, container);
                 block.Move(x , y);
                 block.SetObjectName(x, y);
             }
@@ -146,7 +146,7 @@ public class Map : MonoBehaviour
 
     public bool CanShuffle(int row, int col, bool isLoading)
     {
-        if (!m_hexs[row, col].type.isBlockMovableType())
+        if (!m_hexs[col, row].type.isBlockMovableType())
             return false;
 
         return true;
@@ -170,6 +170,6 @@ public class Map : MonoBehaviour
 
     public bool IsSwipeable(int row, int col)
     {
-        return m_hexs[row, col].type.isBlockMovableType();
+        return m_hexs[col, row].type.isBlockMovableType();
     }
 }
