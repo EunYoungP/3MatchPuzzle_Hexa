@@ -40,7 +40,7 @@ namespace MapShuffle
             {
                 for(int row = 0; row < map.width; row++)
                 {
-                    Block block = map.blocks[col, row];
+                    Block block = map.blocks[row, col];
 
                     if (block == null)
                         continue;
@@ -79,9 +79,9 @@ namespace MapShuffle
 
         private void PrepareShuffleBlocks()
         {
-            for(int col = 0; col < map.height; col++)
+            for(int row = 0; row < map.width; row++)
             {
-                for(int row = 0; row < map.width; row++)
+                for(int col = 0; col < map.height; col++)
                 {
                     if (!map.CanShuffle(row, col, isLoadingShuffle))
                         continue;
@@ -93,7 +93,7 @@ namespace MapShuffle
                         if (randomizeBlocks.ContainsKey(rndKey))
                             continue;
 
-                        randomizeBlocks.Add(rndKey, new BlockVector(map.blocks[col, row], new Vector2Int(col, row)));
+                        randomizeBlocks.Add(rndKey, new BlockVector(map.blocks[row, col], new Vector2Int(row, col)));
                         break;
                     }
                 }
@@ -103,14 +103,14 @@ namespace MapShuffle
 
         private void RunShuffle()
         {
-            for(int col = 0; col < map.height; col++)
+            for(int row = 0; row < map.width; row++)
             {
-                for(int row = 0; row < map.width; row++)
+                for(int col = 0; col < map.height; col++)
                 {
                     if (!map.CanShuffle(row, col, isLoadingShuffle))
                         continue;
 
-                    map.blocks[col, row] = GetShuffleBlock(row, col);
+                    map.blocks[row, col] = GetShuffleBlock(row, col);
                 }
             }
         }
@@ -194,13 +194,13 @@ namespace MapShuffle
             int xDup = 1, yDup = 1, zDup = 1;
 
             // ¡é
-            if (col > 0 && map.blocks[col - 1, row].IsSafeEqual(block))
-                yDup += map.blocks[col - 1, row].yDuplicate;
+            if (col > 0 && map.blocks[row, col - 1].IsSafeEqual(block))
+                yDup += map.blocks[row, col - 1].yDuplicate;
 
             // ¡è
-            if (col < map.height-1 && map.blocks[col + 1, row].IsSafeEqual(block))
+            if (col < map.height-1 && map.blocks[row, col + 1].IsSafeEqual(block))
             {
-                Block upBlock = map.blocks[col + 1, row];
+                Block upBlock = map.blocks[row, col + 1];
                 yDup += upBlock.yDuplicate;
 
                 if (upBlock.yDuplicate == 1)
@@ -215,13 +215,13 @@ namespace MapShuffle
                     if(col < map.height -1)
                     {
                         // ¢Ø 
-                        Block leftTop = map.blocks[col + HexDirection.oddDirectionOffset[2].y, row + HexDirection.oddDirectionOffset[2].x];
+                        Block leftTop = map.blocks[row + HexDirection.oddDirectionOffset[2].x, col + HexDirection.oddDirectionOffset[2].y];
                         if (row > 0 && leftTop.IsSafeEqual(block))
                             xDup += leftTop.xDuplicate;
                     }
 
                     // ¢×
-                    Block leftBottom = map.blocks[col + HexDirection.oddDirectionOffset[1].y, row + HexDirection.oddDirectionOffset[1].x];
+                    Block leftBottom = map.blocks[row + HexDirection.oddDirectionOffset[1].x, col + HexDirection.oddDirectionOffset[1].y];
                     if (row > 0 && leftBottom.IsSafeEqual(block))
                         xDup += leftBottom.xDuplicate;
                 }
@@ -230,7 +230,7 @@ namespace MapShuffle
                     if( col < map.height -1)
                     {
                         // ¢Ö 
-                        Block rightTop = map.blocks[col + HexDirection.oddDirectionOffset[4].y, row + HexDirection.oddDirectionOffset[4].x];
+                        Block rightTop = map.blocks[row + HexDirection.oddDirectionOffset[4].x, col + HexDirection.oddDirectionOffset[4].y];
                         if (row < map.width - 1 && rightTop.IsSafeEqual(block))
                         {
                             xDup += rightTop.xDuplicate;
@@ -241,7 +241,7 @@ namespace MapShuffle
                     }
 
                     // ¢Ù
-                    Block rightBottom = map.blocks[col + HexDirection.oddDirectionOffset[5].y, row + HexDirection.oddDirectionOffset[5].x];
+                    Block rightBottom = map.blocks[row + HexDirection.oddDirectionOffset[5].x, col + HexDirection.oddDirectionOffset[5].y];
                     if (row < map.width - 1 && rightBottom.IsSafeEqual(block))
                     {
                         xDup += rightBottom.xDuplicate;
@@ -256,12 +256,12 @@ namespace MapShuffle
                 if(row > 0)
                 {
                     // ¢Ø 
-                    Block leftTop = map.blocks[col + HexDirection.evenDirectionOffset[2].y, row + HexDirection.evenDirectionOffset[2].x];
+                    Block leftTop = map.blocks[row + HexDirection.evenDirectionOffset[2].x, col + HexDirection.evenDirectionOffset[2].y];
                     if (row > 0 && leftTop.IsSafeEqual(block))
                         zDup += leftTop.zDuplicate;
 
                     // ¢×
-                    Block leftBottom = map.blocks[col + HexDirection.evenDirectionOffset[1].y, row + HexDirection.evenDirectionOffset[1].x];
+                    Block leftBottom = map.blocks[row + HexDirection.evenDirectionOffset[1].x, col + HexDirection.evenDirectionOffset[1].y];
                     if (row > 0 && leftBottom.IsSafeEqual(block))
                         zDup += leftBottom.zDuplicate;
                 }
@@ -269,12 +269,12 @@ namespace MapShuffle
                 if(row < map.width - 1)
                 {
                     // ¢Ö 
-                    Block rightTop = map.blocks[col + HexDirection.evenDirectionOffset[4].y, row + HexDirection.evenDirectionOffset[4].x];
+                    Block rightTop = map.blocks[row + HexDirection.evenDirectionOffset[4].x, col + HexDirection.evenDirectionOffset[4].y];
                     if (row < map.width - 1 && rightTop.IsSafeEqual(block))
                         zDup += rightTop.zDuplicate;
 
                     // ¢Ù
-                    Block rightBottom = map.blocks[col + HexDirection.evenDirectionOffset[5].y, row + HexDirection.evenDirectionOffset[5].x];
+                    Block rightBottom = map.blocks[row + HexDirection.evenDirectionOffset[5].x, col + HexDirection.evenDirectionOffset[5].y];
                     if (row < map.width - 1 && rightBottom.IsSafeEqual(block))
                         zDup += rightBottom.zDuplicate;
                 }

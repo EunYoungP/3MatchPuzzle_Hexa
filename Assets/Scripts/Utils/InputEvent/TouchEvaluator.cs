@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Util
 {
-    public enum Swipe
+    public enum SwipeType
     {
         NULL        = -1,
         UP_RIGHT    = 0,
@@ -17,25 +17,25 @@ namespace Util
 
     public static class TouchEvaluator
     {
-        public static Swipe EvalSwipeDir(Vector2 start, Vector2 end)
+        public static SwipeType EvalSwipeDir(Vector2 start, Vector2 end)
         {
             float angle = EvalDragAngle(start, end);
 
             if (angle < 0)
-                return Swipe.NULL;
+                return SwipeType.NULL;
 
             int swipe = (((int)angle) % 360) / 60;
 
             switch(swipe)
             {
-                case 0: return Swipe.UP_RIGHT;
-                case 1: return Swipe.UP;      
-                case 2: return Swipe.UP_LEFT;
-                case 3: return Swipe.DOWN_LEFT;
-                case 4: return Swipe.DOWN;
-                case 5: return Swipe.DOWN_RIGHT;
+                case 0: return SwipeType.UP_RIGHT;
+                case 1: return SwipeType.UP;      
+                case 2: return SwipeType.UP_LEFT;
+                case 3: return SwipeType.DOWN_LEFT;
+                case 4: return SwipeType.DOWN;
+                case 5: return SwipeType.DOWN_RIGHT;
             }
-            return Swipe.NULL;
+            return SwipeType.NULL;
         }
 
         private static float EvalDragAngle(Vector2 start, Vector2 end)
@@ -56,20 +56,20 @@ namespace Util
 
     public static class SwipeDirMethod
     {
-        public static int GetTargetRow(this Swipe swipeDir, int row)
+        public static int GetTargetRow(this SwipeType swipeDir, int row)
         {
             switch (swipeDir)
             {
-                case Swipe.DOWN_LEFT: return -1;
-                case Swipe.UP_LEFT: return -1;
-                case Swipe.UP_RIGHT: return 1;
-                case Swipe.DOWN_RIGHT: return 1;
+                case SwipeType.DOWN_LEFT: return -1;
+                case SwipeType.UP_LEFT: return -1;
+                case SwipeType.UP_RIGHT: return 1;
+                case SwipeType.DOWN_RIGHT: return 1;
                 default:
                     return 0;
             }
         }
 
-        public static int GetTargetCol(this Swipe swipeDir, int row)
+        public static int GetTargetCol(this SwipeType swipeDir, int row)
         {
             bool isOdd = ((row % 2) == 1);
 
@@ -77,10 +77,10 @@ namespace Util
             {
                 switch (swipeDir)
                 {
-                    case Swipe.DOWN: return -1;
-                    case Swipe.UP_LEFT: return 1;
-                    case Swipe.UP: return 1;
-                    case Swipe.UP_RIGHT: return 1;
+                    case SwipeType.DOWN: return -1;
+                    case SwipeType.UP_LEFT: return 1;
+                    case SwipeType.UP: return 1;
+                    case SwipeType.UP_RIGHT: return 1;
                     default:
                         return 0;
                 }
@@ -89,10 +89,10 @@ namespace Util
             {
                 switch (swipeDir)
                 {
-                    case Swipe.DOWN: return -1;
-                    case Swipe.DOWN_LEFT: return -1;
-                    case Swipe.UP: return 1;
-                    case Swipe.DOWN_RIGHT: return -1;
+                    case SwipeType.DOWN: return -1;
+                    case SwipeType.DOWN_LEFT: return -1;
+                    case SwipeType.UP: return 1;
+                    case SwipeType.DOWN_RIGHT: return -1;
                 }
             }
             return 0;

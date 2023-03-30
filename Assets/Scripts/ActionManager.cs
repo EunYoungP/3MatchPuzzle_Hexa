@@ -23,13 +23,13 @@ public class ActionManager
         return m_MonoBehaviour.StartCoroutine(routine);
     }
 
-    public void DoSwipeAction(int row, int col, Swipe swipeDir)
+    public void DoSwipeAction(int row, int col, SwipeType swipeDir)
     {
         if (m_Stage.IsValidSwpie(row, col, swipeDir))
             StartCoroutine(CoDoSwipeAction(row, col, swipeDir));
     }
 
-    IEnumerator CoDoSwipeAction(int row, int col, Swipe swipeDir)
+    IEnumerator CoDoSwipeAction(int row, int col, SwipeType swipeDir)
     {
         if(!isRunning)
         {

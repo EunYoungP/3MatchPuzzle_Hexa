@@ -32,7 +32,7 @@ namespace Util
             return mapLocalPos;
         }
 
-        public Swipe EvalSwipeDir(Vector2 start, Vector2 end)
+        public SwipeType EvalSwipeDir(Vector2 start, Vector2 end)
         {
             return TouchEvaluator.EvalSwipeDir(start, end);
         }

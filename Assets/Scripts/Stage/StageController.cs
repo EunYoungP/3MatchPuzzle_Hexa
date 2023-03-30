@@ -49,7 +49,8 @@ public class StageController : MonoBehaviour
 
     private void OnInputHandler()
     {
-        if(!m_TouchAvailable && m_InputManager.isInputDown)
+        // 마우스 버튼 DOWN
+        if (!m_TouchAvailable && m_InputManager.isInputDown)
         {
             Vector2 localPoint = m_InputManager.touchToMapPosition;
 
@@ -57,22 +58,23 @@ public class StageController : MonoBehaviour
                 return;
 
             Vector2Int blockIdx;
-            if(m_stage.IsOnVailedBlock(localPoint, out blockIdx))
+            if (m_stage.IsOnVailedBlock(localPoint, out blockIdx))
             {
                 m_TouchAvailable = true;
                 m_BlockIndex = blockIdx;
                 m_ClickPos = localPoint;
             }
-        }    
-        else if(m_TouchAvailable && m_InputManager.isInputUp)
+        }
+        // 마우스 버튼 UP
+        else if (m_TouchAvailable && m_InputManager.isInputUp)
         {
             Vector2 localPoint = m_InputManager.touchToMapPosition;
 
-            Swipe swipeDir = m_InputManager.EvalSwipeDir(m_ClickPos, localPoint);
+            SwipeType swipeDir = m_InputManager.EvalSwipeDir(m_ClickPos, localPoint);
 
             Debug.Log($"Swipe : {swipeDir}, Block = {m_BlockIndex}");
 
-            if(swipeDir != Swipe.NULL)
+            if (swipeDir != SwipeType.NULL)
             {
                 m_ActionManager.DoSwipeAction(m_BlockIndex.x, m_BlockIndex.y, swipeDir);
             }

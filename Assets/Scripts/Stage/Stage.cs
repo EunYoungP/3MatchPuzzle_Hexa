@@ -36,55 +36,57 @@ public class Stage
     {
         Debug.Log($"localPoint : {localPoint}");
         //= new Vector2Int((int)(localPoint.x - Constant.TO_CENTER_OFFSET.x - Constant.TO_CENTER_OFFSET.x), (int)(localPoint.y - Constant.TO_CENTER_OFFSET.y - Constant.TO_CENTER_OFFSET.y));
-        float localToBlock_X = (int)((localPoint.x - Constant.TO_CENTER_OFFSET.x) / Constant.XOFFSET);
+        float localToBlock_X = (localPoint.x - Constant.TO_CENTER_OFFSET.x) / Constant.XOFFSET;
+        int row = (int)(localToBlock_X + 0.5f);
+
         float localToBlock_Y = localPoint.y;
 
-        if (localToBlock_X % 2 ==1)
+        if (row % 2 ==1)
         {
-            localToBlock_Y -= Constant.YOFFSET / 2;
-            localToBlock_Y = (localToBlock_Y - Constant.TO_CENTER_OFFSET.y) / Constant.YOFFSET;
+            localToBlock_Y = localToBlock_Y - Constant.TO_CENTER_OFFSET.y;
+            localToBlock_Y -= (Constant.YOFFSET / 2);
+            localToBlock_Y /= Constant.YOFFSET;
         }
         else
         {
             localToBlock_Y = (localToBlock_Y - Constant.TO_CENTER_OFFSET.y) / Constant.YOFFSET;
         }
         
-        int row = (int)localToBlock_X;
-        int col = (int)localToBlock_Y;
+        int col = (int)(localToBlock_Y + 0.5f);
         blockIndex = new Vector2Int(row, col);
         Debug.Log($"mouse down block index : {blockIndex}");
 
         return m_map.IsSwipeable(row, col);
     }
 
-    public bool IsValidSwpie(int row, int col, Swipe swipeDir)
+    public bool IsValidSwpie(int row, int col, SwipeType swipeDir)
     {
         switch (swipeDir)
         {
-            case Swipe.UP: return col < m_map.height -1;
-            case Swipe.DOWN: return col > 0;
-            case Swipe.UP_RIGHT:
+            case SwipeType.UP: return col < m_map.height -1;
+            case SwipeType.DOWN: return col > 0;
+            case SwipeType.UP_RIGHT:
                 {
                     if (row % 2 == 1)
                         return col < map.height - 1 && row < map.width - 1;
                     else
                         return row < map.width - 1;
                 }
-            case Swipe.UP_LEFT:
+            case SwipeType.UP_LEFT:
                 {
                     if (row % 2 == 1)
                         return row > 0 && col < map.height - 1;
                     else
                         return row > 0;
                 }
-            case Swipe.DOWN_LEFT:
+            case SwipeType.DOWN_LEFT:
                 {
                     if (row % 2 == 1)
                         return row > 0;
                     else
                         return row > 0;
                 }
-            case Swipe.DOWN_RIGHT:
+            case SwipeType.DOWN_RIGHT:
                 {
                     if (row % 2 == 1)
                         return row < map.width - 1;
@@ -95,14 +97,14 @@ public class Stage
         }
     }
 
-    public IEnumerator CoDoSwipeAction(int row, int col, Swipe swipeDir, Returnable<bool> actionResult)
+    public IEnumerator CoDoSwipeAction(int row, int col, SwipeType swipeDir, Returnable<bool> actionResult)
     {
         actionResult.value = false;
 
         int swipeRow = row;
         int swipeCol = col;
         swipeRow += swipeDir.GetTargetRow(row);
-        swipeCol += swipeDir.GetTargetCol(col);
+        swipeCol += swipeDir.GetTargetCol(row);
 
         if(m_map.IsSwipeable(swipeRow, swipeCol))
         {

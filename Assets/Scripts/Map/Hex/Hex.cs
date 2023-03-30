@@ -17,7 +17,7 @@ public class Hex
 
     public Hex InstantiateHex(GameObject hexPrefab, Transform container)
     {
-        GameObject hex = Object.Instantiate(hexPrefab, new Vector3(0,0,0) , Quaternion.identity);
+        GameObject hex = Object.Instantiate(hexPrefab, new Vector3(0,0,0), Quaternion.identity);
         
         hex.transform.parent = container;
         hexBehaviour = hex.GetComponent<HexBehaviour>();
