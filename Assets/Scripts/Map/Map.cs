@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using MapShuffle;
+using Util;
 
 public class Map : MonoBehaviour
 {
+    MapEnumerator m_MapEnumerator;
+
     private int m_width;
     private int m_height;
 
@@ -29,6 +32,7 @@ public class Map : MonoBehaviour
         // Hex, Block 생성자 구현 예정
         m_hexs = new Hex[width, height];
         m_blocks = new Block[width, height];
+        m_MapEnumerator = new MapEnumerator(this);
     }
 
     private void MakeHexaMap()
@@ -171,5 +175,97 @@ public class Map : MonoBehaviour
     public bool IsSwipeable(int row, int col)
     {
         return m_hexs[row, col].type.isBlockMovableType();
+    }
+
+    // 구현해야합니다.
+    public IEnumerator Evaluate(Returnable<bool> matchResult)
+    {
+        yield return null;
+
+        bool isFoundMatchBlock = UpdateAllBlockMatchStatus();
+        // 1. 모든 블럭의 매칭 정보 계산, 3매치 블럭 존재 검사
+
+        // 2. 매치된 블럭이 없는 경우
+
+        // 3. 매치된 블럭이 있는 경우
+        // 3-1. 첫 번째 페이즈. 매치된 블럭에 지정된 액션 실행
+        // 3-2. 첫 번째 페이즈가 반영된 최종 블럭 상태 반환
+
+        // 3-3. 매칭된 블럭 제거
+        // 3-4. 3매치 존재 여부 판단
+        matchResult.value = true;
+    }
+
+    // 전체 블럭의 매칭 정보 계산(개수, 상태, 내구도)
+    public bool UpdateAllBlockMatchStatus()
+    {
+        List<Block> allBlcok = new List<Block>();
+    }
+
+
+    
+    /// <summary>
+    /// 사각 보드의 퍼즐은 가로, 세로만 검사하면 되지만
+    /// 육각 보드의 퍼즐은 세로, 대각1↘, 대각2↗ 세 부분을 검사해야합니다.
+    /// 해당 함수는 3이상의 블럭의 매치를 검사하고, 
+    /// 있다면 해당 블럭들의 상태를 매치로 변경해줍니다.
+    /// </summary>
+    public bool EvalMatchedBlocks(int row, int col, List<Block> matchedBlockList)
+    {
+        bool isFoundMatchedBlock = false;
+
+        Block baseBlock = m_blocks[row, col];
+
+        if (m_hexs[row, col].IsObstacle())
+            return false;
+
+        // 1. 세로 방향 매치 검사
+        Block block;
+       
+        // 1-1. 위
+        for(int i = col+1; i < height; i++)
+        {
+            block = m_blocks[row, i];
+
+            if (!block.IsEqual(baseBlock))
+                break;
+                
+            matchedBlockList.Add(block);
+        }
+
+        // 1-2. 아래
+        for(int i = col -1; i >= 0; i--)
+        {
+            block = m_blocks[i, col];
+
+            if (!block.IsEqual(baseBlock))
+                break;
+
+            matchedBlockList.Add(block);
+        }
+
+        // 1-3. 3이상 매치 검사
+        if(matchedBlockList.Count > 3)
+        {
+            isFoundMatchedBlock = true;
+        }
+
+
+        // 2. 대각1↘ 방향 매치 검사
+        // 1-1. 왼
+        // 1-2. 오
+        // 1-3. 3이상 매치 검사
+
+        // 3. 대각2↗ 방향 매치 검사
+        // 1-1. 왼
+        // 1-2. 오
+        // 1-3. 3이상 매치 검사
+
+        return isFoundMatchedBlock;
+    }
+
+    void SetBlockMatched(List<Block> matchedBlockList, )
+    {
+
     }
 }

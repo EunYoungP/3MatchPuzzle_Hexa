@@ -39,4 +39,9 @@ public class Hex
     {
         hexBehaviour .name = "Hex" + x + "_" + y;
     }
+
+    public bool IsObstacle()
+    {
+        return type == HexType.EMPTY;
+    }
 }

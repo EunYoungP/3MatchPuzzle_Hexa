@@ -35,11 +35,29 @@ public class ActionManager
         {
             isRunning = true;
 
+            // 블럭 스와이프 결과 수신 객체
             Returnable<bool> swipedBlock = new Returnable<bool>(false);
             yield return m_Stage.CoDoSwipeAction(row, col, swipeDir, swipedBlock);
 
+            if(swipedBlock.value)
+            {
+                // 블럭 매치 판단 결과 수신 객체
+                Returnable<bool> evalBlock = new Returnable<bool>(false);
+                //yield return 
+
+                if(!evalBlock.value)
+                {
+                    yield return CoDoSwipeAction(row, col, swipeDir);
+                }
+            }
             isRunning = false;
         }
         yield break;
     }
+
+    IEnumerator Evaluate(Returnable<bool> matchResult)
+    {
+        yield return m_Stage.Evaluate(matchResult);
+    }
+
 }

@@ -20,6 +20,31 @@ public enum BlockVariety
     VARIETY_5 = 5,
 }
 
+enum BlockStatus
+{
+    NORMAL,
+    MATCH,
+    CLEAR
+}
+
+enum BlockClearType
+{
+    NONE = -1,
+    CLEAR_SIMPLE = 0,
+    CLEAR_VERT = 1,
+    CLEAR_UP_DIAGONAL = 2,
+    CLEAR_DOWN_DIAGONAL = 3,
+    CLEAR_CIRCLE = 4,               // 주변 블럭 제거
+    CLEAR_LAZER = 5,                // 지정 블럭과 동일한 블럭 모두 제거
+    CLEAR_VERT_BUFF = 6,            // VERTICAL + CIRCLE
+    CLEAR_UP_DIAGONAL_BUFF = 7,     // UP_DIAGONAL + CIRCLE
+    CLEAR_DOWN_DIAGONAL_BUFF = 8,   // DOWN_DIAGONAL + CIRCLE
+    CLEAR_CIRCLE_BUFF = 9,          // CIRCLE + CIRCLE
+    CLEAR_LAZER_BUFF = 10           // LAZER + LAZER
+
+
+}
+
 public static class BlockMethod
 {
     public static bool IsSafeEqual(this Block block, Block targetBlock)

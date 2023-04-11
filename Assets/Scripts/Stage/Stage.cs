@@ -35,7 +35,6 @@ public class Stage
     public bool IsOnVailedBlock(Vector2 localPoint, out Vector2Int blockIndex)
     {
         Debug.Log($"localPoint : {localPoint}");
-        //= new Vector2Int((int)(localPoint.x - Constant.TO_CENTER_OFFSET.x - Constant.TO_CENTER_OFFSET.x), (int)(localPoint.y - Constant.TO_CENTER_OFFSET.y - Constant.TO_CENTER_OFFSET.y));
         float localToBlock_X = (localPoint.x - Constant.TO_CENTER_OFFSET.x) / Constant.XOFFSET;
         int row = (int)(localToBlock_X + 0.5f);
 
@@ -127,5 +126,10 @@ public class Stage
             }
         }
         yield break;
+    }
+
+    public IEnumerator Evaluate(Returnable<bool> matchResult)
+    {
+        yield return m_map.Evaluate(matchResult);
     }
 }
