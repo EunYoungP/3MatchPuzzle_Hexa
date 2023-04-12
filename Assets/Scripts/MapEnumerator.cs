@@ -10,4 +10,9 @@ public class MapEnumerator
     {
         m_map = map;
     }
+
+    public bool IsCageType(int row, int col)
+    {
+        return false;
+    }
 }

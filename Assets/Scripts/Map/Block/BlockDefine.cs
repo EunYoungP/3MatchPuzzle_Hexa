@@ -20,14 +20,14 @@ public enum BlockVariety
     VARIETY_5 = 5,
 }
 
-enum BlockStatus
+public enum BlockStatus
 {
     NORMAL,
     MATCH,
     CLEAR
 }
 
-enum BlockClearType
+public enum BlockQuestType
 {
     NONE = -1,
     CLEAR_SIMPLE = 0,
@@ -41,8 +41,6 @@ enum BlockClearType
     CLEAR_DOWN_DIAGONAL_BUFF = 8,   // DOWN_DIAGONAL + CIRCLE
     CLEAR_CIRCLE_BUFF = 9,          // CIRCLE + CIRCLE
     CLEAR_LAZER_BUFF = 10           // LAZER + LAZER
-
-
 }
 
 public static class BlockMethod

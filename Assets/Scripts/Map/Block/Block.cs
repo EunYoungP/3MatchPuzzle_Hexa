@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Base;
+using Quest;
 
 public class Block
 {
@@ -10,6 +11,20 @@ public class Block
 
     public Transform blockObj { get { return m_blockBehaviour?.transform; } }
     Vector3Int vDuplicate;
+
+    // 블럭 매칭
+    public BlockStatus blockStatus;
+    public BlockQuestType blockQuestType;
+    public MatchType matchType;
+    public short matchCount;
+
+    // 블럭 내구도, 클리어 되기위한 매치 횟수
+    int durability;
+    public virtual int Durability
+    {
+        get { return durability; }
+        set { durability = value; }
+    }
 
     // ↖
     public int xDuplicate
@@ -70,6 +85,11 @@ public class Block
     public Block(BlockType blockType)
     {
         type = blockType;
+
+        blockStatus = BlockStatus.NORMAL;
+        blockQuestType = BlockQuestType.CLEAR_SIMPLE;
+        matchType = MatchType.NONE;
+        durability = 1;
     }
 
     public Block InstantiateBlock(GameObject blockPrefab, Transform container)
@@ -118,5 +138,68 @@ public class Block
     public void MoveTo(Vector3 to, float duration)
     {
         m_blockBehaviour.StartCoroutine(Util.Action2D.MoveTo(blockObj, to, duration));
+    }
+
+    public void UpdateBlcokStatusMatch(MatchType newMatchType, bool accumulate = true)
+    {
+        this.blockStatus = BlockStatus.MATCH;
+
+        if (matchType == MatchType.NONE)
+            this.matchType = newMatchType;
+        else
+        {
+            this.matchType = accumulate ? matchType.Add(newMatchType) : newMatchType;
+        }
+        matchCount = matchType.ToValue();
+    }
+
+    public bool DoEvaluation(MapEnumerator mapEnumerator, int row, int col)
+    {
+        Debug.Assert(mapEnumerator != null, $"({row}, {col})");
+
+        if (!IsEvaluatable())
+            return false;
+
+        // 1. 매치된 상태의 블럭
+        if (blockStatus == BlockStatus.MATCH)
+        {
+            if (blockQuestType == BlockQuestType.CLEAR_SIMPLE || mapEnumerator.IsCageType(row, col))
+            {
+                Debug.Assert(durability > 0, "durability is zero");
+
+                Durability--;
+            }
+        }
+        else
+        {
+            return true;
+        }
+
+        if(Durability == 0)
+        {
+            blockStatus = BlockStatus.CLEAR;
+            return false;
+        }
+
+        // 클리어 조건에 도달하지 않은 경우 기본 상태로 변경
+        blockStatus = BlockStatus.NORMAL;
+        matchType = MatchType.NONE;
+        matchCount = 0;
+
+        return false;
+    }
+
+    public bool IsEvaluatable()
+    {
+        if (blockStatus == BlockStatus.CLEAR || !IsMatchableBlock())
+            return false;
+
+        return true;
+    }
+
+    public virtual void Destroy()
+    {
+        Debug.Assert(blockObj != null);
+        blockBehaviour.OnActionClear();
     }
 }

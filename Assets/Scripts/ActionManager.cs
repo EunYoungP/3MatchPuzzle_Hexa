@@ -43,9 +43,9 @@ public class ActionManager
             {
                 // 블럭 매치 판단 결과 수신 객체
                 Returnable<bool> evalBlock = new Returnable<bool>(false);
-                //yield return 
+                yield return EvaluateMap(evalBlock);
 
-                if(!evalBlock.value)
+                if (!evalBlock.value)
                 {
                     yield return CoDoSwipeAction(row, col, swipeDir);
                 }
@@ -55,7 +55,7 @@ public class ActionManager
         yield break;
     }
 
-    IEnumerator Evaluate(Returnable<bool> matchResult)
+    IEnumerator EvaluateMap(Returnable<bool> matchResult)
     {
         yield return m_Stage.Evaluate(matchResult);
     }
